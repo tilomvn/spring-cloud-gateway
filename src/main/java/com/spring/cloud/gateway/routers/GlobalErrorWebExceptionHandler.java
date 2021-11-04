@@ -30,6 +30,7 @@ class GlobalErrorWebExceptionHandler implements ErrorWebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
+        //TODO: could not verify response is committed
         if (response.isCommitted()) {
             return Mono.error(ex);
         }
