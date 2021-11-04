@@ -1,0 +1,22 @@
+# TODO: review new prototype of MVP1 to determine new router
+globalServices:
+  - id: onboarding
+    endpoint: /onboarding/**
+    host: http://localhost:8080/
+    needAuthorize: true
+  - id: membership
+    endpoint: /membership/**
+    host: http://localhost:8081/
+    needAuthorize: true
+  - id: voucher
+    endpoint: /voucher/**
+    host: http://localhost:8082/
+    needAuthorize: true
+  - id: payment
+    endpoint: /payment/**
+    host: http://localhost:8083/
+    needAuthorize: true
+  - id: authentication
+    endpoint: /authentication/**
+    host: http://localhost:8084/
+    needAuthorize: false
