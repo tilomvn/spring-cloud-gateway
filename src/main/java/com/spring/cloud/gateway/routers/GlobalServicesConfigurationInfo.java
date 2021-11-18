@@ -11,7 +11,8 @@ import java.util.List;
 //TODO: integrate to CI/CD
 @PropertySource(value = "file:./opt/global_services.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties
-public class GlobalServicesConfigurationInfo {
+public
+class GlobalServicesConfigurationInfo {
 
     List<ServicesConfigurationInfo.Service> globalServices;
 

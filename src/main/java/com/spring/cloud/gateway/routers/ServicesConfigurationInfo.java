@@ -12,7 +12,7 @@ import java.util.List;
 @Configuration
 @PropertySource(value = "classpath:services.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties
-public class ServicesConfigurationInfo {
+class ServicesConfigurationInfo {
 
     final Logger log = LoggerFactory.getLogger(ServicesConfigurationInfo.class);
 

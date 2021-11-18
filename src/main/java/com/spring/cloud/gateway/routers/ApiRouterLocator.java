@@ -1,9 +1,12 @@
 package com.spring.cloud.gateway.routers;
 
 import com.spring.cloud.gateway.filters.AuthorizationFilter;
+import org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
 
 class ApiRouterLocator implements RouteLocator {
@@ -11,21 +14,32 @@ class ApiRouterLocator implements RouteLocator {
     final RouteLocatorBuilder routeLocatorBuilder;
     final ServicesConfigurationInfo servicesConfigurationInfo;
     final AuthorizationFilter authorizationFilter;
+    final RetryGatewayFilterFactory retryGatewayFilterFactory;
 
     ApiRouterLocator(RouteLocatorBuilder routeLocatorBuilder, ServicesConfigurationInfo servicesConfigurationInfo,
-                    AuthorizationFilter authorizationFilter) {
+                    AuthorizationFilter authorizationFilter, RetryGatewayFilterFactory retryGatewayFilterFactory) {
         this.routeLocatorBuilder = routeLocatorBuilder;
         this.servicesConfigurationInfo = servicesConfigurationInfo;
         this.authorizationFilter = authorizationFilter;
+        this.retryGatewayFilterFactory = retryGatewayFilterFactory;
     }
 
     @Override
     public Flux<Route> getRoutes() {
         RouteLocatorBuilder.Builder routesBuilder = routeLocatorBuilder.routes();
-        return Flux.fromStream(servicesConfigurationInfo.getServices().stream())
-                .map(service -> routesBuilder.route(service.getId(), routeSpecs -> routeSpecs.path(service.getEndpoint())
-                                .filters(f -> service.getNeedAuthorize() ? f.filter(authorizationFilter) : f)
-                                .uri(service.getHost())))
+
+        RetryGatewayFilterFactory.RetryConfig retryConfig = new RetryGatewayFilterFactory.RetryConfig()
+                .setStatuses(HttpStatus.UNAUTHORIZED).setMethods(HttpMethod.GET, HttpMethod.POST).setRetries(1);
+
+        return Flux.fromStream(servicesConfigurationInfo.services.stream())
+                .map(service -> {
+                    retryConfig.setRouteId(service.id);
+                    return routesBuilder.route(service.id, routeSpecs -> routeSpecs.path(service.endpoint)
+                                .filters(f -> service.needAuthorize ? f.filter(authorizationFilter) :
+                                        //TODO: add retry to unauthorized request (optional)
+                                        f.filter(retryGatewayFilterFactory.apply(retryConfig)))
+                                .uri(service.host));
+                })
                 .collectList()
                 .flatMapMany(builders -> routesBuilder.build().getRoutes());
     }

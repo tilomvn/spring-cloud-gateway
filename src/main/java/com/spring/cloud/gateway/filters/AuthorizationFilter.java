@@ -38,12 +38,12 @@ public class AuthorizationFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         List<String> headers = exchange.getRequest().getHeaders().getOrEmpty("Authorization");
         if (headers.size() == 0) {
-            return onError(exchange, HttpStatus.FORBIDDEN.value(), unAuthorizedMessage);
+            return onError(exchange, HttpStatus.UNAUTHORIZED.value(), unAuthorizedMessage);
         } else {
             String jwtToken = headers.get(0);
             AuthenticationService.AuthorizationResponse authorizationResponse = authenticationService.authorize(jwtToken);
             if (!authorizationResponse.getAuthResult()) {
-                return onError(exchange, HttpStatus.FORBIDDEN.value(), authorizationResponse.getMessage());
+                return onError(exchange, HttpStatus.UNAUTHORIZED.value(), authorizationResponse.getMessage());
             }
             return chain.filter(exchange);
         }
@@ -52,7 +52,7 @@ public class AuthorizationFilter implements GatewayFilter {
     Mono<Void> onError(ServerWebExchange exchange, int code, String errorMessage) {
         ServerHttpResponse response = exchange.getResponse();
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        response.setStatusCode(HttpStatus.FORBIDDEN);
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return response.writeWith(Mono.fromSupplier(() -> {
             DataBufferFactory bufferFactory = response.bufferFactory();
             try {
