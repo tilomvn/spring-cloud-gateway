@@ -35,9 +35,12 @@ class ApiRouterLocator implements RouteLocator {
                 .map(service -> {
                     retryConfig.setRouteId(service.id);
                     return routesBuilder.route(service.id, routeSpecs -> routeSpecs.path(service.endpoint)
-                                .filters(f -> service.needAuthorize ? f.filter(authorizationFilter) :
-                                        //TODO: add retry to unauthorized request (optional)
-                                        f.filter(retryGatewayFilterFactory.apply(retryConfig)))
+                                .filters(f -> {
+                                    f.rewritePath(service.id, "");//fix bug forward predicates when using with eureka
+                                    if (service.needAuthorize) { f.filter(authorizationFilter); }
+                                    else { f.filter(retryGatewayFilterFactory.apply(retryConfig)); }
+                                    return f;
+                                })
                                 .uri(service.host));
                 })
                 .collectList()

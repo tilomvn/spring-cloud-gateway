@@ -18,6 +18,19 @@ spring:
   #  hibernate.ddl-auto: validate
   #  #`hibernate_sequence' doesn't exist
   #  hibernate.use-new-id-generator-mapping: false
+  application:
+    name: api-gateway
+  #cloud:
+  #  gateway:
+  #    routes:
+  #      - id: cornerstone-crm-cloud-authentication
+  #        uri: lb://cornerstone-crm-cloud-authentication
+  #        predicates:
+  #          - Path=/cornerstone-crm-cloud-authentication/health-check
+  #      - id: cornerstone-crm-ops-master
+  #        uri: lb://cornerstone-crm-ops-master
+  #        predicates:
+  #          - Path=/cornerstone-crm-ops-master/**
 
 security:
   jwt:
