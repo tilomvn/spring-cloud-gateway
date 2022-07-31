@@ -32,6 +32,15 @@ spring:
   #        predicates:
   #          - Path=/cornerstone-crm-ops-master/**
 
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true
+    lease:
+      duration: 5
+
 security:
   jwt:
     secret: Rfk45@#!FFfwef
