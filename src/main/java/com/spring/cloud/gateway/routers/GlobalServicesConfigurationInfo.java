@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-//TODO: integrate to CI/CD
 @PropertySource(value = "file:./opt/global_services.yaml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties
 public class GlobalServicesConfigurationInfo {

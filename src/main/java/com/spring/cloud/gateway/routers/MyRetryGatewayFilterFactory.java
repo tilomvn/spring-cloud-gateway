@@ -19,7 +19,7 @@ class MyRetryGatewayFilterFactory extends RetryGatewayFilterFactory {
     public void reset(ServerWebExchange exchange) {
         super.reset(exchange);
         //TODO: modify things before re-send
-        ServerHttpRequest.Builder newRequest = exchange.getRequest().mutate();
+        var newRequest = exchange.getRequest().mutate();
         newRequest.header(HttpHeaders.AUTHORIZATION, "Bearer asdkhasd.askdhkuasd");
         exchange.mutate().request(newRequest.build());
     }

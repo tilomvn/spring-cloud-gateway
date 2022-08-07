@@ -13,19 +13,19 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-class AuthenticationServiceTests {
+class AuthorizationServiceTests {
 
     @Mock
     JWTProvider jwtProvider;
 
     @InjectMocks
-    AuthenticationService authenticationService;
+    AuthorizationService authorizationService;
 
     @Test
     void authorizationTest() {
         when(jwtProvider.verify(anyString())).thenReturn("CIF");
-        AuthenticationService.AuthorizationResponse response =
-                authenticationService.authorize("Bearer askdhiauyshdas.ASasiudy@13298dakjhkjhsd");
+        AuthorizationService.AuthorizationResponse response =
+                authorizationService.authorize("Bearer askdhiauyshdas.ASasiudy@13298dakjhkjhsd");
         assertEquals("CIF", response.getMessage());
         assertEquals(true, response.getAuthResult());
     }
@@ -34,8 +34,8 @@ class AuthenticationServiceTests {
     void authorizationInvalidTest() {
         when(jwtProvider.verify(anyString())).thenThrow(JWTVerificationException.class);
 
-        AuthenticationService.AuthorizationResponse response =
-                authenticationService.authorize("Bearer askdhiauyshdas.ASasiudy@13298dakjhkjhsd");
+        AuthorizationService.AuthorizationResponse response =
+                authorizationService.authorize("Bearer askdhiauyshdas.ASasiudy@13298dakjhkjhsd");
 
         assertEquals("Invalid Token", response.getMessage());
         assertEquals(false, response.getAuthResult());
@@ -45,8 +45,8 @@ class AuthenticationServiceTests {
     void authorizationTokenExpiredTest() {
         when(jwtProvider.verify(anyString())).thenThrow(TokenExpiredException.class);
 
-        AuthenticationService.AuthorizationResponse response =
-                authenticationService.authorize("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDSUYiLCJleHAiOjE2MzU5ODgzNjF9.aWHOmooIicOI4MAj6mjP4PXjIU17OA_VnE1ymH-m6dcdP6ZHTprzQuQYVWAATA2ExnNeSDYM4J5NT9aq_nV4YA");
+        AuthorizationService.AuthorizationResponse response =
+                authorizationService.authorize("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDSUYiLCJleHAiOjE2MzU5ODgzNjF9.aWHOmooIicOI4MAj6mjP4PXjIU17OA_VnE1ymH-m6dcdP6ZHTprzQuQYVWAATA2ExnNeSDYM4J5NT9aq_nV4YA");
 
         assertEquals("Token Expired", response.getMessage());
         assertEquals(false, response.getAuthResult());

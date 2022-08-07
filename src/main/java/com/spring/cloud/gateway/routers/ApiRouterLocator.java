@@ -26,9 +26,9 @@ class ApiRouterLocator implements RouteLocator {
 
     @Override
     public Flux<Route> getRoutes() {
-        RouteLocatorBuilder.Builder routesBuilder = routeLocatorBuilder.routes();
+        var routesBuilder = routeLocatorBuilder.routes();
 
-        RetryGatewayFilterFactory.RetryConfig retryConfig = new RetryGatewayFilterFactory.RetryConfig()
+        var retryConfig = new RetryGatewayFilterFactory.RetryConfig()
                 .setStatuses(HttpStatus.UNAUTHORIZED).setMethods(HttpMethod.GET, HttpMethod.POST).setRetries(1);
 
         return Flux.fromStream(servicesConfigurationInfo.services.stream())

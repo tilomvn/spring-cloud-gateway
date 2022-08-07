@@ -5,11 +5,11 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthenticationService {
+public class AuthorizationService {
 
     final JWTProvider jwtProvider;
 
-    AuthenticationService(JWTProvider jwtProvider) {
+    AuthorizationService(JWTProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 

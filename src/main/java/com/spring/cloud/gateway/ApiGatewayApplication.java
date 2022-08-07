@@ -1,5 +1,6 @@
 package com.spring.cloud.gateway;
 
+import com.spring.cloud.gateway.client.AuthenticationClient;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,12 +15,10 @@ public class ApiGatewayApplication {
 	}
 
 	@Bean
-	ApplicationRunner runner(RestTemplate clientRestTemplate) {
+	ApplicationRunner runner(AuthenticationClient authenticationClient) {
 		return args -> {
-			var response = clientRestTemplate.getForObject("http://cornerstone-crm-cloud-authentication/health-check", String.class);
-			System.out.println(response);
-			var response1 = clientRestTemplate.getForObject("http://cornerstone-crm-cloud-authentication/health-check", String.class);
-			System.out.println(response1);
+			System.out.println(authenticationClient.healthCheck());
+			System.out.println(authenticationClient.healthCheck());
 		};
 	}
 }
